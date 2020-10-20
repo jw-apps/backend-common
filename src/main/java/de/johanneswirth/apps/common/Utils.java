@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.SecurityContext;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -55,5 +56,9 @@ public class Utils {
                 .withIssuer("tac-server")
                 .build(); //Reusable verifier instance
         return verifier.verify(ticket);
+    }
+
+    public static long userID(SecurityContext context) {
+        return Long.parseLong(context.getUserPrincipal().getName());
     }
 }

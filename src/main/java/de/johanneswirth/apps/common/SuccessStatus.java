@@ -35,6 +35,10 @@ public class SuccessStatus<T> implements IStatus<T> {
 
     public static final SuccessStatus OK = SuccessStatus.OK(null, 0);
 
+    public static <T> SuccessStatus<T> OK(T value) {
+        return new SuccessStatus<>(value, 0);
+    }
+
     public static <T> SuccessStatus<T> OK(T value, long version) {
         return new SuccessStatus<>(value, version);
     }
