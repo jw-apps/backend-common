@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 
-public class ErrorSerializer extends JsonSerializer<ErrorStatus> {
+public class ErrorSerializer extends JsonSerializer<Error> {
     @Override
-    public void serialize(ErrorStatus value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(Error value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartObject();
         gen.writeBooleanField("error", value.isError());
         gen.writeBooleanField("critical", value.isCritical());
-        gen.writeStringField("message", value.getErrorMessage());
+        gen.writeStringField("message", value.getError());
         gen.writeEndObject();
     }
 }

@@ -17,9 +17,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
-
-import static de.johanneswirth.apps.common.ErrorStatus.UNAUTHORIZED;
-import static de.johanneswirth.apps.common.ErrorStatus.TOKEN_EXPIRED;
+import static de.johanneswirth.apps.common.CommonError.TOKEN_EXPIRED;
+import static de.johanneswirth.apps.common.CommonError.UNAUTHORIZED;
 
 
 /**
