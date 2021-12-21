@@ -6,7 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class SuccessStatus<T> implements IStatus<T> {
+public class SuccessStatus<T> implements IStatus {
     @Valid
     private T value;
     @NotNull

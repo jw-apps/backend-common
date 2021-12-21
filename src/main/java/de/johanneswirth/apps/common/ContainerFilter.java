@@ -8,12 +8,16 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class ContainerFilter implements DynamicFeature {
 
-    public ContainerFilter() {}
+    private VerificationHelper verificationHelper;
+
+    public ContainerFilter(VerificationHelper verificationHelper) {
+        this.verificationHelper = verificationHelper;
+    }
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         if (resourceInfo.getResourceMethod().getAnnotation(Secured.class) != null) {
-            context.register(new AuthenticationFilter());
+            context.register(new AuthenticationFilter(verificationHelper));
         }
         context.register(new HeaderFilter());
     }

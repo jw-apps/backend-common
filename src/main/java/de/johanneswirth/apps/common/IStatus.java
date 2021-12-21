@@ -2,7 +2,7 @@ package de.johanneswirth.apps.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public interface IStatus<T> {
+public interface IStatus {
 
     @JsonProperty("error")
     boolean isError();

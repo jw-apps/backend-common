@@ -30,7 +30,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    public AuthenticationFilter() {}
+    private VerificationHelper verificationHelper;
+
+    public AuthenticationFilter(VerificationHelper verificationHelper) {
+        this.verificationHelper = verificationHelper;
+    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -39,40 +43,40 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         if (ticket == null) {
             LOGGER.warn("Authorization header not set");
             requestContext.abortWith(Response.ok(UNAUTHORIZED).build());
+        } else {
+            try {
+                DecodedJWT jwt = verificationHelper.validateJWT(ticket);
+                final boolean sec = requestContext.getSecurityContext().isSecure();
+                final String auth = requestContext.getSecurityContext().getAuthenticationScheme();
+                requestContext.setSecurityContext(new SecurityContext() {
+
+                    @Override
+                    public boolean isUserInRole(String role) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean isSecure() {
+                        return sec;
+                    }
+
+                    @Override
+                    public Principal getUserPrincipal() {
+                        return jwt::getSubject;
+                    }
+
+                    @Override
+                    public String getAuthenticationScheme() {
+                        return auth;
+                    }
+
+                });
+            } catch (TokenExpiredException ex) {
+                requestContext.abortWith(Response.ok(TOKEN_EXPIRED).build());
+            } catch (JWTVerificationException ex) {
+                requestContext.abortWith(Response.ok(UNAUTHORIZED).build());
+            }
         }
-        try {
-            DecodedJWT jwt = Utils.validateJWT(ticket);
-            final boolean sec = requestContext.getSecurityContext().isSecure();
-            final String auth = requestContext.getSecurityContext().getAuthenticationScheme();
-            requestContext.setSecurityContext(new SecurityContext() {
-
-                @Override
-                public boolean isUserInRole(String role) {
-                    return true;
-                }
-
-                @Override
-                public boolean isSecure() {
-                    return sec;
-                }
-
-                @Override
-                public Principal getUserPrincipal() {
-                    return jwt::getSubject;
-                }
-
-                @Override
-                public String getAuthenticationScheme() {
-                    return auth;
-                }
-
-            });
-        } catch (TokenExpiredException ex) {
-            requestContext.abortWith(Response.ok(TOKEN_EXPIRED).build());
-        } catch (JWTVerificationException ex) {
-            requestContext.abortWith(Response.ok(UNAUTHORIZED).build());
-        }
-
     }
 
 }
